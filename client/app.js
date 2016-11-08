@@ -1,7 +1,20 @@
+
+
+var navbar = Vue.component('navbar', {
+  template: '<span>This is the navbar component: {{text}}</span>',
+  data: function() {
+    return { text: '(data from navbar component)' }
+  },
+});
+
+
 var App = Vue.component('App', {
-  template: '<span>My name is Sam. This is the App Component</span>',
-  data: {
-    message: 'This is the App component!'
+  template: '<div><span>{{message}}</span><navbar></navbar></div>',
+  data: function() {
+    return { message: '(data from App component)' }
+  },
+  components: {
+    'navbar': navbar
   }
 });
 
