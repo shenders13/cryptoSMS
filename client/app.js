@@ -1,54 +1,62 @@
 
-
-var navbar = Vue.component('navbar', {
-  template: '<span>This is the navbar component: {{text}}</span>',
-  data: function() {
-    return { text: '(data from navbar component)' }
-  },
-});
-
-
-var App = Vue.component('App', {
-  template: '<div><span>{{message}}</span><navbar></navbar></div>',
-  data: function() {
-    return { message: '(data from App component)' }
-  },
-  components: {
-    'navbar': navbar
-  }
-});
-
-
 new Vue({
-
-  // We want to target the div with an id of 'events'
   el: '#app',
-
-  // Here we can register any values or collections that hold data
-  // for the application
   data: {
-    event: {
-      name: 'Sam',
-      description: 'Hello',
-      data: 'text'
-    },
-    method: {
-      addEvent: function() {
-        console.log('add event method being run')
-      }
-    }
+    cities: names,
+    value: '',
+    selection: '',
+    open: false,
+    current: 0
   },
-
-  // Anything within the ready function will run when the application loads
-  ready: function() {},
-
-  // Methods we want to use in our application are registered here
   methods: {
-    addEvent: function () {
-      console.log('hello')
+    submit: function (e) {
+      e.preventDefault()
+      // var mobile = document.getElementById('mobile-field').value
+      var crypto = document.getElementById('crypto-form-field').value
+      var url = 'https://api.coinmarketcap.com/v1/ticker/' + crypto.toLowerCase() + '/'
+      Vue.http.get(url).then((response) => {
+        // success callback
+        console.log(crypto + ' price: ' + response.body[0].price_usd)
+      }, (response) => {
+        // error callback
+        console.log(response)
+      })
+    },
+    enter () {
+      this.selection = this.matches[this.current]
+      this.open = false
+    },
+    isActive (index) {
+      return index === this.current
+    },
+    change () {
+      if (this.open === false) {
+        this.open = true
+        this.current = 0
+      }
+    },
+    suggestionClick (index) {
+      console.log('index in suggestionClick: ', index)
+      this.selection = suggestions[index]
+      this.open = false
     }
   },
-  components: {
-    'App': App
+  computed: {
+    matches () {
+      // debugger;
+      // return this.suggestions.filter((str) => {
+      //   function capitalizeFirstLetter (string) {
+      //     return string.charAt(0).toUpperCase() + string.slice(1)
+      //   }
+      //   return str.indexOf(capitalizeFirstLetter(this.selection)) >= 0
+      // })
+    },
+    openSuggestion () {
+      console.log('inside open Suggestion')
+      return this.selection !== '' &&
+        this.matches.length !== 0 &&
+        this.open === true
+    }
   }
 });
+
