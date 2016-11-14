@@ -47,8 +47,19 @@ var sendSMSAndSaveAccount = function(mobile, crypto, res) {
 }
 
 //------------------------------------------------------- 
-//--------------------- CRON JOB ------------------------
+//------------------ BULK SMS TASK ----------------------
 //------------------------------------------------------- 
+  
+  // get all (mobile, crypto) tuples from DB and store 'accounts' object
+  // compose 'price 'object. keys being the cryptos & values being null initally
+  // iterate through keys of price object
+    // fetch data on each crypto from API
+    // for each get request update the price object with the price
+  //
+  // once price object is fully generated, iterate through 'accounts' object
+    // for each account, use the mobile number to find the related price in 'price'
+    // sms the mobile number with the price
+  //
 
 //------------------------------------------------------- 
 //--------------------- EXPORT --------------------------
