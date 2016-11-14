@@ -219,3 +219,13 @@ textarea:focus, input:focus{
   padding-top: 20px;
 }
 
+.my-link {
+  color:white;
+  font-size:30px;
+  text-align: center;
+  font-weight:400;
+}
+
+.my-link:hover {
+  color:white;
+}

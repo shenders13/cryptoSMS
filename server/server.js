@@ -8,7 +8,6 @@ var models = require('./models/index.js');
 var bodyParser = require('body-parser');
 var serverHelpers = require('./serverHelpers.js');
 var app = express();
-// var db = require('../db/db.js')
 app.use(bodyParser.json());
 app.use('/', express.static('../client'));
 app.set('port', (process.env.PORT || 8080));
@@ -38,18 +37,11 @@ app.get('/', function(req, res) {
 });
 
 app.get('/send_sms_save_user', function(req, res) {
-  var mobile = req.query.mobile;
-  var crypto = req.query.crypto;
-  serverHelpers.sendSMS(mobile, crypto, res)
-  models.Account.create({mobile: mobile, crypto: crypto}).then(function(account) {
-    console.log('New account made: ', account)
-  })
+  serverHelpers.sendSMSAndSaveAccount(req.query.mobile, req.query.crypto, res)
 });
 
 app.get('/getAccounts', function(req, res) {
-  models.Account.findAll({}).then(function(accounts) {
-    res.json(accounts);
-  })
+  serverHelpers.getAccounts(res);
 })
 
 app.delete('/delete', function(req, res) {

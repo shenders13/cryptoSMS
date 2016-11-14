@@ -5,10 +5,10 @@ new Vue({
     cities: names,
     value: '',
     cancelling: false,
+    cancelled: false,
     selection: '',
     open: false,
     fetchedData: false,
-    accountCancelled: false,
     current: 0,
     mobile: '',
     crypto: '',
@@ -31,6 +31,7 @@ new Vue({
     },
     deleteAccount: function(e) {
       e.preventDefault()
+      this.cancelled = true;
       var mobile = document.getElementById('deleteAccountField').value
       var url = '/delete?mobile=' + mobile;
       Vue.http.delete(url).then((err, response) => {
@@ -38,7 +39,6 @@ new Vue({
           console.log(err)
         } else {
           console.log('response from server after deleting: ', response);
-          this.accountCancelled = true;
         }
       })
     },
@@ -56,6 +56,7 @@ new Vue({
     },
     home: function() {
       this.cancelling = false;
+      this.cancelled = false;
     }
     // enter () {
     //   this.selection = this.matches[this.current]

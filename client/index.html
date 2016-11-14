@@ -24,9 +24,9 @@
     <div class='main-container'>
       <div class='col-xs-5 col-xs-offset-1'>
         <div class='form-fields' v-if='!cancelling'>
-          <p class='form-header-text'> Get SMS'ed a </p>
-          <p class='form-header-text-second-row'> cryptocurrency price </p>
-          <p class='form-header-text-second-row'> daily, for free. </p>
+          <p class='form-header-text'> Get daily SMS' of </p>
+          <p class='form-header-text-second-row'> a cryptocurrency </p>
+          <p class='form-header-text-second-row'> price for free. </p>
             <form v-if='!fetchedData && !cancelling'>
               <div>
                 <div style="position:relative">
@@ -57,18 +57,22 @@
         </div>
         <div class='form-fields' v-if='cancelling'>
           <p class='form-header-text'> Sorry to see you go, </p>
-          <p class='badgering-text'> Enter your digits, and I'll stop badgering you</p>
-            <form >
+            <div v-if='!cancelled'>
+              <p class='badgering-text'> Enter your digits, and I'll stop badgering you</p>
+              <form >
               <input type='text' name='deleteAccountField' class='crypto-field bottom-field' placeholder="Mobile" id='deleteAccountField'>
               <button v-on:click="deleteAccount" class='submit-button'>
                 Cancel Account
               </button>
-            </form>
-            <transition name="fade">
-              <div class='panel panel-default' v-if='accountCancelled'>
-                <p class='fetchedData-text'>Adios. Check out more stuff i've made at <a href='http://samhenderson.xyz'>samhenderson.xyz</a></p>
-              </div>
-            </transition>
+              </form>
+            </div>
+            <div v-if='cancelled'>
+              <transition name="fade">
+                <div class='panel panel-default'>
+                  <p class='fetchedData-text'>Adios. Check out more stuff i've made at <br><br><a href='http://samhenderson.xyz' class='my-link'>samhenderson.xyz</a></p>
+                </div>
+              </transition>
+            </div>
         </div>
       </div>
       <div class='col-xs-4 col-xs-offset-1'>
