@@ -1,0 +1,9 @@
+- Add DB
+- transfer over to environmental variables
+- Add cron job
+- deploy
+- smart form
+- Clean crypto currency spaces and replace with '-'
+
+
+

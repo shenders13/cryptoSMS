@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Crypto SMS</title>
-  <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bootstrap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,28 +24,34 @@
         <div class='form-fields'>
           <p class='form-header-text'> Daily SMS, </p>
           <p class='form-header-text-second-row'> Cryptocurrency price. </p>
-          <form>
-            <div>
-              <div style="position:relative">
-                  <input name='cryptocurrency' id='crypto-form-field' class='crypto-field' placeholder="Cryptocurrency" v-model="selection"
-                      @keydown.enter = 'enter'
-                      @input = 'change'
-                  />
-                  <ul class="dropdown-menu" style="width:100%">
-                      <li class='li-dropdown'
-                          v-for="suggestion in matches"
-                          @click="suggestionClick(suggestions.indexOf(suggestion))"
-                      >
-                        <a href="#">{{ suggestion }}</a>
-                      </li>
-                  </ul>
+          <p class='form-header-text-second-row' v-if='fetchingData'> Loading </p>
+            <form v-if='!fetchedData'>
+              <div>
+                <div style="position:relative">
+                    <input name='cryptocurrency' id='crypto-form-field' class='crypto-field' placeholder="Cryptocurrency" v-model="selection"
+                        @keydown.enter = 'enter'
+                        @input = 'change'
+                    />
+                    <ul class="dropdown-menu" style="width:100%">
+                        <li class='li-dropdown'
+                            v-for="suggestion in matches"
+                            @click="suggestionClick(suggestions.indexOf(suggestion))"
+                        >
+                          <a href="#">{{ suggestion }}</a>
+                        </li>
+                    </ul>
+                </div>
               </div>
-            </div>
-            <input type='text' name='mobile' class='crypto-field bottom-field' placeholder="Mobile" id='mobile-field'>
-            <button v-on:click="submit" class='submit-button'>
-              Create an Account 
-            </button>
-          </form>
+              <input type='text' name='mobile' class='crypto-field bottom-field' placeholder="Mobile" id='mobile-field'>
+              <button v-on:click="submit" class='submit-button'>
+                Create an Account 
+              </button>
+            </form>
+            <transition name="fade">
+              <div class='panel panel-default' v-if='fetchedData'>
+                <p class='fetchedData-text'><b>{{crypto}}</b> price will be sent to {{mobile}} every day! Woop woop. The current price is <b>${{price}}</b> USD. </p>
+              </div>
+            </transition>
         </div>
       </div>
       <div class='col-xs-4 col-xs-offset-1'>
@@ -57,8 +63,8 @@
 
   <!-- JS -->
   <script src="data.js"></script>
-  <script src="../node_modules/vue/dist/vue.js"></script>
-  <script src="../node_modules/vue-resource/dist/vue-resource.js"></script>
+  <script src="vue"></script>
+  <script src="vue-resource"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -118,7 +118,7 @@ input.crypto-field {
 }
 
 .bottom-field {
-  margin-top: 3vh;
+  margin-top: 3vh !important;
 }
 
 textarea:focus, input:focus{
@@ -179,4 +179,29 @@ textarea:focus, input:focus{
     padding-top: 18px;
     padding-bottom: 18px;
     background-color: #ffffff;
+}
+
+.fetchedData-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 100;
+  letter-spacing: 1px;
+  line-height: 26px;
+}
+
+.panel {
+  margin-top: 50px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
 }
