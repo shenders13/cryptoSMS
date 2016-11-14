@@ -43,13 +43,8 @@ app.get('/send_sms_save_user', function(req, res) {
   var mobile = req.query.mobile;
   var crypto = req.query.crypto;
   serverHelpers.sendSMS(mobile, crypto, res)
-});
-
-app.post('/postAccount', function(req, res) {
-  var mobile = req.query.mobile;
-  var crypto = req.query.crypto;
   models.Account.create({mobile: mobile, crypto: crypto}).then(function(account) {
-    res.json(account);
+    console.log('New account made: ', account)
   })
 });
 
