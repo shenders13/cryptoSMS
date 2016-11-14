@@ -44,6 +44,10 @@ p {
   display: inline-block;
 }
 
+.logo-box:hover {
+  cursor: pointer;
+}
+
 .main-container {
   width:100%;
   height: 90vh;
@@ -205,3 +209,13 @@ textarea:focus, input:focus{
 .fade-enter, .fade-leave-active {
   opacity: 0
 }
+
+.badgering-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 100;
+  letter-spacing: 1px;
+  line-height: 26px;
+  padding-top: 20px;
+}
+

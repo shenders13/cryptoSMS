@@ -29,11 +29,9 @@ app.get('/bootstrap', function(req, res) {
   res.sendFile(path.join(__dirname,'../node_modules/bootstrap/dist/css/bootstrap.min.css'));
 });
 
-
 //------------------------------------------------------- 
 //----------------- SERVER ENDPOINTS --------------------
 //------------------------------------------------------- 
-
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, '../client'));
@@ -51,6 +49,13 @@ app.get('/send_sms_save_user', function(req, res) {
 app.get('/getAccounts', function(req, res) {
   models.Account.findAll({}).then(function(accounts) {
     res.json(accounts);
+  })
+})
+
+app.delete('/delete', function(req, res) {
+  var mobile = req.query.mobile;
+  models.Account.destroy({where: {mobile: mobile}}).then(function(response) {
+    res.json(response);
   })
 })
 

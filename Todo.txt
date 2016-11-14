@@ -1,6 +1,6 @@
-- Add DB
 - transfer over to environmental variables
 - Add cron job
+- cancel account, enter mobile number
 - deploy
 - smart form
 - Clean crypto currency spaces and replace with '-'

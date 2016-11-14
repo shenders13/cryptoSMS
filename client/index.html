@@ -12,20 +12,22 @@
   <div id="app">
     <div class="navbar">
       <div class='col-xs-8 col-xs-offset-1'>
-        <img src='http://res.cloudinary.com/small-change/image/upload/v1478313250/logo_fmsrtp.png' class='navbar-logo'>
-        <p class='logo-text'>cryptoSMS</p>
+        <div class='logo-box' v-on:click='home'>
+          <img src='http://res.cloudinary.com/small-change/image/upload/v1478313250/logo_fmsrtp.png' class='navbar-logo'>
+          <p class='logo-text'>cryptoSMS</p>
+        </div>
       </div>
       <div class='col-xs-2'>
-        <span class='navbar-button' v-on:click="">Cancel Account</span>
+        <button class='navbar-button' v-on:click="toggleCancel">Cancel Account</button>
       </div>
     </div>
     <div class='main-container'>
       <div class='col-xs-5 col-xs-offset-1'>
-        <div class='form-fields'>
-          <p class='form-header-text'> Daily SMS, </p>
-          <p class='form-header-text-second-row'> Cryptocurrency price. </p>
-          <p class='form-header-text-second-row' v-if='fetchingData'> Loading </p>
-            <form v-if='!fetchedData'>
+        <div class='form-fields' v-if='!cancelling'>
+          <p class='form-header-text'> Get SMS'ed a </p>
+          <p class='form-header-text-second-row'> cryptocurrency price </p>
+          <p class='form-header-text-second-row'> daily, for free. </p>
+            <form v-if='!fetchedData && !cancelling'>
               <div>
                 <div style="position:relative">
                     <input name='cryptocurrency' id='crypto-form-field' class='crypto-field' placeholder="Cryptocurrency" v-model="selection"
@@ -53,6 +55,21 @@
               </div>
             </transition>
         </div>
+        <div class='form-fields' v-if='cancelling'>
+          <p class='form-header-text'> Sorry to see you go, </p>
+          <p class='badgering-text'> Enter your digits, and I'll stop badgering you</p>
+            <form >
+              <input type='text' name='deleteAccountField' class='crypto-field bottom-field' placeholder="Mobile" id='deleteAccountField'>
+              <button v-on:click="deleteAccount" class='submit-button'>
+                Cancel Account
+              </button>
+            </form>
+            <transition name="fade">
+              <div class='panel panel-default' v-if='accountCancelled'>
+                <p class='fetchedData-text'>Adios. Check out more stuff i've made at <a href='http://samhenderson.xyz'>samhenderson.xyz</a></p>
+              </div>
+            </transition>
+        </div>
       </div>
       <div class='col-xs-4 col-xs-offset-1'>
         <img src='http://res.cloudinary.com/small-change/image/upload/v1478386844/handphone_yydlgu.png' class='iphone-image'>
@@ -61,7 +78,6 @@
     </div>
   </div>
 
-  <!-- JS -->
   <script src="data.js"></script>
   <script src="vue"></script>
   <script src="vue-resource"></script>

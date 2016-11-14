@@ -4,9 +4,11 @@ new Vue({
   data: {
     cities: names,
     value: '',
+    cancelling: false,
     selection: '',
     open: false,
     fetchedData: false,
+    accountCancelled: false,
     current: 0,
     mobile: '',
     crypto: '',
@@ -25,14 +27,35 @@ new Vue({
         this.price = response.body[0].price_usd;
         this.fetchedData = true;
         this.sendSmsAndSaveUser(crypto, mobile)
-      }, (response) => {
+      })
+    },
+    deleteAccount: function(e) {
+      e.preventDefault()
+      var mobile = document.getElementById('deleteAccountField').value
+      var url = '/delete?mobile=' + mobile;
+      Vue.http.delete(url).then((err, response) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('response from server after deleting: ', response);
+          this.accountCancelled = true;
+        }
       })
     },
     // hit send_sms_save_user endpoint
     sendSmsAndSaveUser: function(crypto, mobile) {
       var url = '/send_sms_save_user?crypto=' + crypto + '&mobile=' + mobile;
       Vue.http.get(url).then((response) => {
+        console.log('response after submitting', response)
       })
+    },
+    toggleCancel: function() {
+      console.log('cancelling before: ', this.cancelling )
+      this.cancelling = !this.cancelling
+      console.log('cancelling after: ', this.cancelling )
+    },
+    home: function() {
+      this.cancelling = false;
     }
     // enter () {
     //   this.selection = this.matches[this.current]
