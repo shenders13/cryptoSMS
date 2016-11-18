@@ -31,13 +31,13 @@
               <div>
                 <div style="position:relative">
                     <input name='cryptocurrency' id='crypto-form-field' class='crypto-field' placeholder="Cryptocurrency" v-model="selection"
-                        @keydown.enter = 'enter'
-                        @input = 'change'
+                        v-on:keydown.enter = 'enter'
+                        v-on:input = 'change'
                     />
                     <ul class="dropdown-menu" style="width:100%">
                         <li class='li-dropdown'
                             v-for="suggestion in matches"
-                            @click="suggestionClick(suggestions.indexOf(suggestion))"
+                            v-on:click="suggestionClick(suggestions.indexOf(suggestion))"
                         >
                           <a href="#">{{ suggestion }}</a>
                         </li>
