@@ -1,7 +1,7 @@
 //------------------------------------------------------- 
 //---------------------- IMPORTS ------------------------
 //------------------------------------------------------- 
-
+require('dotenv').config()
 var express = require('express');
 var path = require('path');
 var models = require('./models/index.js');
@@ -42,6 +42,10 @@ app.get('/send_sms_save_user', function(req, res) {
 
 app.get('/getAccounts', function(req, res) {
   serverHelpers.getAccounts(res);
+})
+
+app.get('/smsAll', function(req, res) {
+  serverHelpers.smsAll();
 })
 
 app.delete('/delete', function(req, res) {

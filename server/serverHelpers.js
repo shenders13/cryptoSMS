@@ -1,15 +1,24 @@
-var twilioSID = 'AC6a96f661f8eadeec1c258a05631dac41';
-var twilioAuthToken = '687ea65a90a85dddcbc53fe26210d208';
-var twilio = require('twilio')(twilioSID, twilioAuthToken);
+require('dotenv').config()
+const twilioSID = process.env.CRYPTO_SMS_TWILIO_ACCOUNT_SID;
+const twilioAuthToken = process.env.CRYPTO_SMS_TWILIO_ACCOUNT_AUTH_TOKEN;
+const twilio = require('twilio')(twilioSID, twilioAuthToken);
+
 var models = require('./models/index.js');
+var request = require('request');
 
 //------------------------------------------------------- 
 //------------------------ SMS --------------------------
 //------------------------------------------------------- 
 
-var sendSMS = function(mobile, crypto, res) {
+var sendSMS = function(mobile, crypto, intro, change, price) {
+  if (intro) {
+    var text = "Howdy, I'm Sam. I'll send you the price of " + crypto + " each day."
+  } else {
+    var text = crypto + ' ' + change + '%. Now at $' + (Number(price).toFixed(2)).toString() + ' USD'
+  }
+
   twilio.messages.create({
-      body: "Howdy, I'm Sam. I'll send you the price of " + crypto + " each day.",
+      body: text,
       to: mobile,
       from: '+16503514141'
     }, function(err, data) {
@@ -20,7 +29,6 @@ var sendSMS = function(mobile, crypto, res) {
       }
   });
   var reply = 'Sent first SMS to ' + mobile + '. They subscribed to: ' + crypto
-  res.send(reply);
 }
 
 //------------------------------------------------------- 
@@ -41,25 +49,78 @@ var getAccounts = function(res) {
 
 
 var sendSMSAndSaveAccount = function(mobile, crypto, res) {
-  sendSMS(mobile, crypto, res)
+  sendSMS(mobile, crypto, true)
   models.Account.create({mobile: mobile, crypto: crypto})
-  .then(function() {})
+  .then(function(object) {
+    res.send(object)
+  })
 }
 
 //------------------------------------------------------- 
 //------------------ BULK SMS TASK ----------------------
 //------------------------------------------------------- 
   
-  // get all (mobile, crypto) tuples from DB and store 'accounts' object
-  // compose 'price 'object. keys being the cryptos & values being null initally
-  // iterate through keys of price object
-    // fetch data on each crypto from API
-    // for each get request update the price object with the price
-  //
-  // once price object is fully generated, iterate through 'accounts' object
-    // for each account, use the mobile number to find the related price in 'price'
-    // sms the mobile number with the price
-  //
+var smsAll = function() {
+
+  // get all (mobile, crypto) tuples from DB
+  models.Account.findAll({}).then(function(accounts) {
+    var cryptoArray = [];
+    var promiseArray = [];
+    var output = {};
+    var users = []
+
+    accounts.forEach(function(item) {
+      var crypto = item.crypto;
+      var mobile = item.mobile
+      var user = {crypto: crypto, mobile: mobile}
+      users.push(user);
+      cryptoArray.push(crypto);
+    })
+
+    // get latest data for each crypto from API
+    cryptoArray.forEach(function(crypto) {
+      var url = 'https://api.coinmarketcap.com/v1/ticker/' + crypto.toLowerCase() + '/';
+      var promise = new Promise(function(resolve, reject) {
+        request.get(url, function(err, response, body) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(JSON.parse(response.body));
+          }
+        });
+      });
+      promiseArray.push(promise);
+    })
+
+    // store crypto, latest value & percentage change in 'price' object
+    Promise.all(promiseArray).then(function(results) {
+      results.forEach(function(item) {
+        var obj = item[0];
+        var price = {};
+        price['crypto'] = obj.name
+        price['value'] = obj.price_usd
+        price['change'] = obj.percent_change_24h
+        output[obj.name] = price
+      })
+
+      users.forEach(function(user) {
+        var crypto = user.crypto;
+        var mobile = user.mobile;
+        var value = output[crypto].value;
+        var change = output[crypto].change;
+        sendSMS(mobile, crypto, false, change, value)
+      })
+      // for each account, use the mobile number to find the related price in 'price'
+      // sms the mobile number with the price
+
+      console.log('output object', output)
+    }).catch(function(err) {
+      console.log('Catch: ', err);
+    });
+
+  })
+}
+
 
 //------------------------------------------------------- 
 //--------------------- EXPORT --------------------------
@@ -68,5 +129,6 @@ var sendSMSAndSaveAccount = function(mobile, crypto, res) {
 module.exports = {
   sendSMS: sendSMS, 
   getAccounts: getAccounts, 
-  sendSMSAndSaveAccount: sendSMSAndSaveAccount
+  sendSMSAndSaveAccount: sendSMSAndSaveAccount,
+  smsAll: smsAll
 }
